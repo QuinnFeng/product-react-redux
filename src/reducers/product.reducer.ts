@@ -1,7 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AxiosResponse } from 'axios';
-import { ProductModel } from '../models/product.model';
-
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ProductModel } from "../models/product.model";
 
 interface ProductsState {
   products: ProductModel[] | null;
@@ -12,38 +10,42 @@ const initialState: ProductsState = {
 };
 
 const productsSlice = createSlice({
-  name: 'products',
+  name: "products",
   initialState,
   reducers: {
+    getProducts(state, action: PayloadAction<ProductModel[]>) {
+      state.products = action.payload;
+    },
     addProduct(state, action: PayloadAction<ProductModel>) {
-      state.products = state.products ? [...state.products, action.payload] : [action.payload];
+      state.products = state.products
+        ? [...state.products, action.payload]
+        : [action.payload];
     },
-    getProducts(state, action: PayloadAction<AxiosResponse>) {
-      state.products = action.payload.data;
-    },
-    saveOrUpdateProduct(state, action: PayloadAction<AxiosResponse>) {
-      const updatedProduct: ProductModel = action.payload.data;
+    saveOrUpdateProduct(state, action: PayloadAction<ProductModel>) {
+      const updatedProduct: ProductModel = action.payload;
       state.products = state.products!.map((product) =>
         product.id === updatedProduct.id ? updatedProduct : product
       );
     },
-    getProductById(state, action: PayloadAction<AxiosResponse>) {
-      state.products = [action.payload.data as ProductModel];
+    getProductById(state, action: PayloadAction<ProductModel>) {
+      state.products = [action.payload as ProductModel];
     },
-    deleteProductById(state, action: PayloadAction<AxiosResponse>) {
-      const idToDelete = action.payload.data.id;
-      state.products = state.products!.filter((product) => product.id !== idToDelete);
+    deleteProductById(state, action: PayloadAction<ProductModel>) {
+      const idToDelete = action.payload.id;
+      state.products = state.products!.filter(
+        (product) => product.id !== idToDelete
+      );
     },
-    updateProductStock(state, action: PayloadAction<AxiosResponse>) {
-      const updatedProduct: ProductModel = action.payload.data;
+    updateProductStock(state, action: PayloadAction<ProductModel>) {
+      const updatedProduct: ProductModel = action.payload;
       state.products = state.products!.map((product) =>
         product.id === updatedProduct.id
           ? { ...product, stock: updatedProduct.stock }
           : product
       );
     },
-    getProductsByBrand(state, action: PayloadAction<AxiosResponse>) {
-      state.products = action.payload.data;
+    getProductsByBrand(state, action: PayloadAction<ProductModel[]>) {
+      state.products = action.payload;
     },
   },
 });

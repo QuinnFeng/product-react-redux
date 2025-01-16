@@ -1,10 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit';
-import productsReducer from './reducers/product.reducer'; // Update with the correct path
+import { configureStore } from "@reduxjs/toolkit";
+import productsReducer from "./reducers/product.reducer"; // Update with the correct path
 
 const store = configureStore({
-    reducer: {
-        products: productsReducer, // Add more reducers if needed
-    },
+  reducer: {
+    products: productsReducer, // Add more reducers if needed
+  },
 });
 
 export default store;

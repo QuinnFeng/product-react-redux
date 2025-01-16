@@ -1,77 +1,98 @@
 import axios from "axios";
+import { Dispatch } from "redux";
+import {
+  getProducts as getProductsAction,
+  addProduct as addProductAction,
+  saveOrUpdateProduct as saveOrUpdateProductAction,
+  getProductById as getProductByIdAction,
+  deleteProductById as deleteProductByIdAction,
+  updateProductStock as updateProductStockAction,
+  getProductsByBrand as getProductsByBrandAction,
+} from "../reducers/product.reducer"; // Import the actions from the slice
 import { ProductModel } from "../models/product.model";
-import appConstants from "../constants/constants";
 
 const API_BASE_URL = `${import.meta.env.VITE_REACT_APP_API}/api/products`;
 
-// Define the async thunk
 export const getProducts = () => {
-  const getProductsPromise = axios.get("http://localhost:8080/api/products");
-
-  return {
-    type: appConstants.GET_PRODUCTS,
-    payload: getProductsPromise,
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}`);
+      dispatch(getProductsAction(response.data)); // Dispatch the action from the slice
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      // Handle error (e.g., dispatch an error action)
+    }
   };
 };
 
-// Save or update a product
 export const saveOrUpdateProduct = (product: ProductModel) => {
-  const saveOrUpdateProductPromise = axios.post(API_BASE_URL, product);
-  
-  return {
-    type: appConstants.SAVE_OR_UPDATE_PRODUCT,
-    payload: saveOrUpdateProductPromise,
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.post(API_BASE_URL, product);
+      dispatch(saveOrUpdateProductAction(response.data)); // Dispatch the action from the slice
+    } catch (error) {
+      console.error("Failed to save or update product:", error);
+      // Optionally dispatch an error action
+    }
   };
 };
 
-// Retrieve a product by ID
-export const getProductById = (id: number) => {
-  const getProductByIdPromise = axios.get(`${API_BASE_URL}/${id}`);
-
-  return {
-    type: appConstants.GET_PRODUCT_BY_ID,
-    payload: getProductByIdPromise,
+export const addProduct = (product: ProductModel) => {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.post(API_BASE_URL, product);
+      dispatch(addProductAction(response.data)); // Dispatch the action from the slice
+    } catch (error) {
+      console.error("Failed to add product:", error);
+      // Optionally dispatch an error action
+    }
   };
 };
 
-// Retrieve all products
-export const getAllProducts = () => {
-  const getAllProductsPromise = axios.get(API_BASE_URL);
-
-  return {
-    type: appConstants.GET_ALL_PRODUCTS,
-    payload: getAllProductsPromise,
+export const getProductById = (id: string) => {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/${id}`);
+      dispatch(getProductByIdAction(response.data)); // Dispatch the action from the slice
+    } catch (error) {
+      console.error("Failed to fetch product by id:", error);
+      // Optionally dispatch an error action
+    }
   };
 };
 
-// Delete a product by ID
-export const deleteProductById = (id: number) => {
-  const deleteProductByIdPromise = axios.delete(`${API_BASE_URL}/${id}`);
-
-  return {
-    type: appConstants.DELETE_PRODUCT_BY_ID,
-    payload: deleteProductByIdPromise,
+export const deleteProductById = (id: string) => {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/${id}`);
+      dispatch(deleteProductByIdAction(response.data)); // Dispatch the action from the slice
+    } catch (error) {
+      console.error("Failed to delete product by id:", error);
+      // Optionally dispatch an error action
+    }
   };
 };
 
-// Update stock of a product
-export const updateProductStock = (id: number, newStock: number) => {
-  const updateProductStockPromise = axios.put(`${API_BASE_URL}/${id}/stock`, null, {
-    params: { newStock },
-  });
-
-  return {
-    type: appConstants.UPDATE_PRODUCT_STOCK,
-    payload: updateProductStockPromise,
+export const updateProductStock = (id: string, stock: number) => {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.patch(`${API_BASE_URL}/${id}`, { stock });
+      dispatch(updateProductStockAction(response.data)); // Dispatch the action from the slice
+    } catch (error) {
+      console.error("Failed to update product stock:", error);
+      // Optionally dispatch an error action
+    }
   };
 };
 
-// Retrieve products by brand
-export const getProductsByBrand = (brand: string)  => {
-  const getProductsByBrandPromise = axios.get(`${API_BASE_URL}/brand/${brand}`);
-
-  return {
-    type: appConstants.GET_PRODUCTS_BY_BRAND,
-    payload: getProductsByBrandPromise,
+export const getProductsByBrand = (brand: string) => {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}?brand=${brand}`);
+      dispatch(getProductsByBrandAction(response.data)); // Dispatch the action from the slice
+    } catch (error) {
+      console.error("Failed to fetch products by brand:", error);
+      // Optionally dispatch an error action
+    }
   };
 };

@@ -28,7 +28,7 @@ export const appConstants = {
 export interface ReduxState {
   names: string[];
   // reduxState: any,
-  products: ProductModel[]; // the new reduxState
+  products: ProductModel[] | null; // the new reduxState
   user: { username: string };
 }
 

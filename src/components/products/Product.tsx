@@ -1,35 +1,44 @@
-import { useEffect } from "react";
+import { Component } from "react";
 import { getProducts } from "../../actions/product.action";
-import { AppDispatch, RootState } from "../../store";
-import { useDispatch, useSelector } from "react-redux";
 import { ProductModel } from "../../models/product.model";
+import { connect } from "react-redux";
+import { RootState } from "../../store";
 
-const Products: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const products = useSelector((state: RootState) => state.products.products);
+interface ProductsProps {
+  products: ProductModel[] | null;
+  getProducts: () => Promise<void>;
+}
 
-  // Fetch products on component load
-  useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
-
-  // Display a loading state if products are null
-  if (!products) {
-    return <div>Loading products...</div>;
+class Products extends Component<ProductsProps> {
+  componentDidMount() {
+    this.props.getProducts();
   }
 
-  return (
-    <div>
-      <h1>Product List</h1>
-      <ul>
-        {products.map((product: ProductModel) => (
-          <li key={product.id}>
-            <strong>{product.name}</strong> - Stock: {product.stock}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+  render() {
+    const { products } = this.props;
 
-export default Products;
+    return (
+      <div>
+        <h1>Product List</h1>
+
+        {!products ? (
+          <div>Loading products...</div>
+        ) : (
+          <ul>
+            {products?.map((product: ProductModel) => (
+              <li key={product.id}>
+                <strong>{product.name}</strong> - Stock: {product.stock}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = ({ products }: RootState) => ({
+  products: products.products,
+});
+
+export default connect(mapStateToProps, { getProducts })(Products);
