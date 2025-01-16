@@ -6,7 +6,7 @@ const API_BASE_URL = `${import.meta.env.VITE_REACT_APP_API}/api/products`;
 
 // Define the async thunk
 export const getProducts = () => {
-  const getProductsPromise = axios.get("http://localhost:8080/products");
+  const getProductsPromise = axios.get("http://localhost:8080/api/products");
 
   return {
     type: appConstants.GET_PRODUCTS,

@@ -1,61 +1,61 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { getProducts } from "../actions/product.action";
-import { AxiosResponse } from "axios";
-import { appConstants } from "../constants/constants";
-import { ProductModel } from "../models/product.model";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AxiosResponse } from 'axios';
+import { ProductModel } from '../models/product.model';
 
-const initialState = {
-  products: [],
-  loading: false,
-  error: null,
-};
 
-// Create the products slice
-export const productsReducer = (
-  state: ProductModel[] | null,
-  action: ProductsReducerAction
-) => {
-  switch (action.type) {
-    case appConstants.ADD_PRODUCT:
-      return state ? [...state, action.payload] : [action.payload];
-
-    case appConstants.GET_PRODUCTS:
-      return (action.payload as AxiosResponse).data;
-
-    case appConstants.SAVE_OR_UPDATE_PRODUCT:
-      const updatedProduct: ProductModel = action.payload.data;
-      return state!.map((product) =>
-        product.id === updatedProduct.id
-          ? updatedProduct // Update the stock
-          : product
-      );
-
-    case appConstants.GET_PRODUCT_BY_ID:
-      return [action.payload.data as ProductModel];
-
-    case appConstants.DELETE_PRODUCT_BY_ID:
-      state!.splice(
-        state!.findIndex((element) => element.id === action.payload.data.id)
-      );
-      return state;
-
-    case appConstants.UPDATE_PRODUCT_STOCK:
-      return state!.map((product) =>
-        product.id === updatedProduct.id
-          ? { ...product, stock: updatedProduct.stock } // Update the stock
-          : product
-      );
-
-    case appConstants.GET_PRODUCTS_BY_BRAND:
-      return action.payload;
-
-    default:
-      return state;
-  }
-};
-
-interface ProductsReducerAction {
-  type: string;
-  // payload: ProductModel;
-  payload: AxiosResponse;
+interface ProductsState {
+  products: ProductModel[] | null;
 }
+
+const initialState: ProductsState = {
+  products: null,
+};
+
+const productsSlice = createSlice({
+  name: 'products',
+  initialState,
+  reducers: {
+    addProduct(state, action: PayloadAction<ProductModel>) {
+      state.products = state.products ? [...state.products, action.payload] : [action.payload];
+    },
+    getProducts(state, action: PayloadAction<AxiosResponse>) {
+      state.products = action.payload.data;
+    },
+    saveOrUpdateProduct(state, action: PayloadAction<AxiosResponse>) {
+      const updatedProduct: ProductModel = action.payload.data;
+      state.products = state.products!.map((product) =>
+        product.id === updatedProduct.id ? updatedProduct : product
+      );
+    },
+    getProductById(state, action: PayloadAction<AxiosResponse>) {
+      state.products = [action.payload.data as ProductModel];
+    },
+    deleteProductById(state, action: PayloadAction<AxiosResponse>) {
+      const idToDelete = action.payload.data.id;
+      state.products = state.products!.filter((product) => product.id !== idToDelete);
+    },
+    updateProductStock(state, action: PayloadAction<AxiosResponse>) {
+      const updatedProduct: ProductModel = action.payload.data;
+      state.products = state.products!.map((product) =>
+        product.id === updatedProduct.id
+          ? { ...product, stock: updatedProduct.stock }
+          : product
+      );
+    },
+    getProductsByBrand(state, action: PayloadAction<AxiosResponse>) {
+      state.products = action.payload.data;
+    },
+  },
+});
+
+export const {
+  addProduct,
+  getProducts,
+  saveOrUpdateProduct,
+  getProductById,
+  deleteProductById,
+  updateProductStock,
+  getProductsByBrand,
+} = productsSlice.actions;
+
+export default productsSlice.reducer;
