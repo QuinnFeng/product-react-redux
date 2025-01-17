@@ -30,10 +30,9 @@ const productsSlice = createSlice({
     getProductById(state, action: PayloadAction<ProductModel>) {
       state.products = [action.payload as ProductModel];
     },
-    deleteProductById(state, action: PayloadAction<ProductModel>) {
-      const idToDelete = action.payload.id;
+    deleteProductById(state, action: PayloadAction<Number>) {
       state.products = state.products!.filter(
-        (product) => product.id !== idToDelete
+        (product) => product.id !== action.payload
       );
     },
     updateProductStock(state, action: PayloadAction<ProductModel>) {

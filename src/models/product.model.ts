@@ -1,5 +1,5 @@
 export interface ProductModel {
-  id?: number; // question mark means optional
+  id?: number;
   name: string;
   brand: string;
   price: number;

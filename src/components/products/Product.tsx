@@ -1,44 +1,28 @@
-import { Component } from "react";
-import { getProducts } from "../../actions/product.action";
 import { ProductModel } from "../../models/product.model";
-import { connect } from "react-redux";
-import { RootState } from "../../store";
 
-interface ProductsProps {
-  products: ProductModel[] | null;
-  getProducts: () => Promise<void>;
-}
-
-class Products extends Component<ProductsProps> {
-  componentDidMount() {
-    this.props.getProducts();
+export const Product = (product: ProductModel) => {
+  if (!product) {
+    return null;
   }
 
-  render() {
-    const { products } = this.props;
+  const { id, name, brand, price, stock, image } = product;
 
-    return (
-      <div>
-        <h1>Product List</h1>
-
-        {!products ? (
-          <div>Loading products...</div>
-        ) : (
-          <ul>
-            {products?.map((product: ProductModel) => (
-              <li key={product.id}>
-                <strong>{product.name}</strong> - Stock: {product.stock}
-              </li>
-            ))}
-          </ul>
-        )}
+  return (
+    <>
+      <div className="product">
+        <img
+          src={image}
+          alt={name}
+        />
+        <div>
+          <p>#{id}</p>
+          <p>{brand} - { name}</p>
+        </div>
+        <div>
+          <p>${price}</p>
+          <p>Available: {stock}</p>
+        </div>
       </div>
-    );
-  }
-}
-
-const mapStateToProps = ({ products }: RootState) => ({
-  products: products.products,
-});
-
-export default connect(mapStateToProps, { getProducts })(Products);
+    </>
+  );
+};

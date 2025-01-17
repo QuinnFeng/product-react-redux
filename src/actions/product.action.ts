@@ -49,7 +49,7 @@ export const addProduct = (product: ProductModel) => {
   };
 };
 
-export const getProductById = (id: string) => {
+export const getProductById = (id: number) => {
   return async (dispatch: Dispatch) => {
     try {
       const response = await axios.get(`${API_BASE_URL}/${id}`);
@@ -61,11 +61,13 @@ export const getProductById = (id: string) => {
   };
 };
 
-export const deleteProductById = (id: string) => {
+export const deleteProductById = (id: number) => {
   return async (dispatch: Dispatch) => {
     try {
       const response = await axios.delete(`${API_BASE_URL}/${id}`);
-      dispatch(deleteProductByIdAction(response.data)); // Dispatch the action from the slice
+      if (response.status === 204) {
+        dispatch(deleteProductByIdAction(id));
+      }
     } catch (error) {
       console.error("Failed to delete product by id:", error);
       // Optionally dispatch an error action
@@ -73,10 +75,13 @@ export const deleteProductById = (id: string) => {
   };
 };
 
-export const updateProductStock = (id: string, stock: number) => {
+export const updateProductStock = (id: number, stock: number) => {
   return async (dispatch: Dispatch) => {
     try {
-      const response = await axios.patch(`${API_BASE_URL}/${id}`, { stock });
+      const response = await axios.put(
+        `${API_BASE_URL}/${id}/stock?newStock=${stock}`,
+        {}
+      );
       dispatch(updateProductStockAction(response.data)); // Dispatch the action from the slice
     } catch (error) {
       console.error("Failed to update product stock:", error);

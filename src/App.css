@@ -4,3 +4,16 @@
   padding: 2rem;
   text-align: center;
 }
+
+.product {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.product img {
+  width: 8rem;
+  height: 6rem;
+}
